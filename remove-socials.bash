@@ -32,6 +32,19 @@ set -e          # Exit on error
 set -u          # Treat unset variables as an error
 set -o pipefail # Fail on any command in a pipeline that fails
 
+# Function to print text in reverse mode (standout)
+# This function uses terminal capabilities to highlight text.
+# It uses tput to enable standout mode, prints the text, and then disables standout mode
+# This is useful for emphasizing important messages in the terminal output.
+# Note: This function is not used in the script, but can be useful for future enhancements
+# or for highlighting important messages during execution.
+function rev {
+    # standout mode really, but reverse mode for ansi
+    tput smso
+    echo -n "$@"
+    tput rmso
+}
+
 # Define variables
 RARFILENAME="M7_tool_and_ upgrade operation_20210616_Europe"
 ZIPFILENAME="PQ1181CWE25A.AGM.O1.QV.KFS39SST.210616.V3.10"
@@ -69,6 +82,9 @@ if [ ! -d "./files" ]; then
   mkdir files
 else
   echo "Files directory already exists."
+  sudo rm -R ./files
+  mkdir files
+  echo "Cleared existing files directory."
 fi
 
 # Create directories for extracted files and system image
@@ -168,8 +184,10 @@ if [ ! -d "./files/SP_Flash_Tool_v5.2228_Linux" ]; then
   exit 1
 else
   echo "SP Flash Tool directory found, proceeding to run the tool..."
+  echo "$(rev When you see Scanning USB port... plug your turned-off phone in to the USB port and wait for it to be detected.)"
+  read -p "Press enter to continue"
   cd "./files/SP_Flash_Tool_v5.2228_Linux"
-  sh ./flash_tool.sh -s "../$ZIPFILENAME/MT6739_Android_scatter.txt" -c download
-  # sh ./flash_tool.sh
+  sudo chmod 777 ./flash_tool.sh
+  sudo ./flash_tool.sh -s "../$ZIPFILENAME/MT6739_Android_scatter.txt" -c download
 fi
 
