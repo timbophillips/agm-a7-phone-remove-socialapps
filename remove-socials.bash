@@ -169,5 +169,7 @@ if [ ! -d "./files/SP_Flash_Tool_v5.2228_Linux" ]; then
 else
   echo "SP Flash Tool directory found, proceeding to run the tool..."
   cd "./files/SP_Flash_Tool_v5.2228_Linux"
-  sh ./flash_tool.sh
+  sh ./flash_tool.sh -s "../$ZIPFILENAME/MT6739_Android_scatter.txt" -c download
+  # sh ./flash_tool.sh
 fi
+
