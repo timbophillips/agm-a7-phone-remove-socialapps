@@ -54,7 +54,7 @@ else
 fi
 
 # Check if SP Flash Tool is already downloaded
-if [ ! -d ".//SP_Flash_Tool_v5.2228_Linux.zip" ]; then
+if [ ! -f "./SP_Flash_Tool_v5.2228_Linux.zip" ]; then
   echo "SP Flash Tool not found, you will need to download it."
   echo "Download from: https://spflashtools.com/linux/sp-flash-tool-v5-2228-for-linux"
   echo "After downloading, place the SP_Flash_Tool_v5.2228_Linux.zip file in the current directory."
@@ -84,15 +84,9 @@ if [ ! -d "./files/system.img.mount" ]; then
 else
   echo "Directory for mounted system image already exists."
 fi
-# Create directory for SP Flash Tool
-if [ ! -d "./files/SP_Flash_Tool" ]; then
-  echo "Creating directory for SP Flash Tool..."
-  mkdir "./files/SP_Flash_Tool"
-else
-  echo "Directory for SP Flash Tool already exists."
-fi
+
 # Extract the firmware archive
-if [ ! -f "./$RARFILENAME" ]; then
+if [ ! -f "./$RARFILENAME.rar" ]; then
   echo "Firmware archive not found, please place it in the current directory."
   exit 1
 else
@@ -126,21 +120,19 @@ else
 fi
 
 # Remove specified social media applications
-SOCIALAPPS=$(echo $SOCIALAPPS | tr ' ' '|')      # Convert space-separated list to regex pattern
-SOCIALAPPS=$(echo $SOCIALAPPS | sed 's/|/\\|/g') # Escape pipe characters for regex
 cd "./files/system.img.mount/app/"
 sudo rm -R $SOCIALAPPS
-
 cd -
+
 # Unmount the system image
 if mountpoint -q "./files/system.img.mount"; then
-  echo "Unmounting system image..."
-  sudo umount "./files/system.img.mount"
+  echo "Unmounting image..."
+  sudo umount -f "./files/system.img.mount"
 else
   echo "System image is not mounted."
 fi
 # Convert the modified system image back to sparse format
-if [ ! -f "./files/$ZIPFILENAME/system.img.raw" ]; then
+if [ ! -f "./files/system.img.raw" ]; then
   echo "Raw system image not found, cannot convert to sparse format."
   exit 1
 else
@@ -161,7 +153,7 @@ else
 fi
 
 # Unzip the SP Flash Tool
-if [ ! -d "./SP_Flash_Tool_v5.2228_Linux.zip" ]; then
+if [ ! -f "./SP_Flash_Tool_v5.2228_Linux.zip" ]; then
   echo "SP Flash Tool zip file not found, please check the download."
   exit 1
 else
@@ -171,11 +163,11 @@ else
 fi
 
 # Run the SP Flash Tool
-if [ ! -d "./files/SP_Flash_Tool" ]; then
+if [ ! -d "./files/SP_Flash_Tool_v5.2228_Linux" ]; then
   echo "SP Flash Tool directory not found, please check the unzipping process."
   exit 1
 else
   echo "SP Flash Tool directory found, proceeding to run the tool..."
-  cd "./files/SP_Flash_Tool"
+  cd "./files/SP_Flash_Tool_v5.2228_Linux"
   sh ./flash_tool.sh
 fi
